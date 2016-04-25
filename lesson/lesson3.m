@@ -1,7 +1,8 @@
+%%%%%%%%%
 %% init
-initcourse('TSRT14');
-%addpath ../sftool ../sftool/*;
-%%
+% initcourse('TSRT14');
+addpath ../sftoolbox/mfiles/ ../sftoolbox/data/ ../sftoolbox/classes/;
+%%%%%%%%%
 
 %% 2.10
 % init network
@@ -69,3 +70,33 @@ Yut = uteval(X,h);
 Ymc = mceval(X,h);
 plot2(Ytt1,Ytt2,Yut,Ymc,'legend',{'auto'},'col','bgrk')
 %legend tt1 tt1 tt2 tt2 ut ut mc mc;
+
+%% 4.8
+h = '[x(1,:).*x(2,:) ; x(1,:)./x(2,:)]';
+
+sm = sensormod(h,[2,0,2,0]);
+sm.x0 = [1 1];
+sm.pe = ndist( [0 ; 0], [.1 .05 ; .05 .3]);
+
+y = simulate(sm,10);
+
+xls = ls(sm,y);
+xwls = wls(sm,y);
+
+xplot2(xls,xwls,'conf',90)
+
+
+%% 4.9
+s = exsensor('TOA', 8);
+s.x0 = [0 ; 0];
+s.th = [ 1 1 , 1 0 , 1 -1 , 0 -1 , -1 -1 , -1 0 , -1 1 , 0 1 ];
+s.pe = ndist(zeros(8,1),diag(5*rand(8,1)));
+y = simulate(s,1);
+xls = ls(s,y);
+xwls = wls(s,y);
+xplot2(xls,xwls,'conf',90); hold on; crlb(s); hold off;
+figure; plot(s); hold on;crlb2(s,y);
+
+%% 5.4
+N = 10000;
+X = ndist(0 , 0.1);
